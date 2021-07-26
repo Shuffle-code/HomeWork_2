@@ -5,7 +5,7 @@ import java.util.Arrays;
 
 public class Main {
 
-    private static final int size = 100000;
+    private static final int size = 200000;
     private static final int h = size / 2;
     private static float[] arr = new float[size];
 
