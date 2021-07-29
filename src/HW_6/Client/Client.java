@@ -12,6 +12,10 @@ public class Client {
     public Client() {
         start();
         communicate();
+        System.out.println("Closing the connection ...");
+        System.out.println("Shutting down ...");
+        System.out.println("STATUS OK");
+
 
 
     }
@@ -42,9 +46,7 @@ public class Client {
                             isShutDown.set(false);
                             break;
                         }
-//                        else {
-                            System.out.println(inboundMessage);
-//                        }
+                            System.out.println("Server said: " + inboundMessage);
                     }
                 }catch (IOException e){
                     e.printStackTrace();
@@ -59,6 +61,7 @@ public class Client {
                     break;
                 }
                 out.writeUTF(outMessage);
+                System.out.println("Client say..." + outMessage);
             }
         } catch (IOException e) {
             e.printStackTrace();
