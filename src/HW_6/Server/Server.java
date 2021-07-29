@@ -5,6 +5,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Server {
 
@@ -30,35 +32,57 @@ public class Server {
             System.out.println("Client connection: " + client);
             System.out.println("Status OK ...");
 
-
-
         } catch (Exception e) {
             System.out.println("Status NOK ...");
             e.printStackTrace();
         }
     }
+
     private void communicate(){
         try {
             DataInputStream in = new DataInputStream(client.getInputStream());
             DataOutputStream out = new DataOutputStream(client.getOutputStream());
+            Scanner scn = new Scanner(System.in);
+            AtomicBoolean isShutDown = new AtomicBoolean(true);
 
-            while (true){
-                String inboundMessage= in.readUTF();
-                if (inboundMessage.equals("-exit")){
-                    out.writeUTF("ECHO-Server: Good bay!");
-//                    System.out.println("ECHO-Server: Good bay!");
-                    out.writeUTF("-end");
-                    break;
+            new Thread(() -> {
+                while (true) {
+                    try {
+                        String inboundMessage = in.readUTF();
+                        if (inboundMessage.equals("-exit")) {
+                            out.writeUTF("ECHO-Server: Good bay! Please press ENTER");
+//                            System.out.println("ECHO-Server: Good bay!");
+                            out.writeUTF("-end");
+                            isShutDown.set(false);
+                            break;
+                        }
+                        System.out.println("Server accepted message: " + inboundMessage);
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
                 }
-                out.writeUTF("ECHO: " + inboundMessage);
+            }).start();
 
-                System.out.println("Message: " + inboundMessage);
-            }
+
+                while (true) {
+                    System.out.println("Please input message Server...");
+                    String outMessage = scn.nextLine();
+                    if(!isShutDown.get()) {
+                        System.out.println("Client closing...");
+                        System.out.println("STATUS OK");
+                        break;
+                    }
+                    try {
+                        out.writeUTF(outMessage);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    System.out.println("Server say: " + outMessage);
+                }
 //            client.getOutputStream();
-
-
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 }
