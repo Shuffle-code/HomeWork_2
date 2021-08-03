@@ -16,8 +16,6 @@ public class Client {
         System.out.println("Shutting down ...");
         System.out.println("STATUS OK");
 
-
-
     }
 
     private void start(){

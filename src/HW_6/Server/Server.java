@@ -63,7 +63,6 @@ public class Server {
                 }
             }).start();
 
-
                 while (true) {
                     System.out.println("Please input message Server...");
                     String outMessage = scn.nextLine();
